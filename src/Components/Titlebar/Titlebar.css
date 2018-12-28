@@ -1,0 +1,104 @@
+.Titlebar{
+    width: 100%;
+    height: 32px;
+    font-size: 12px;
+    position: relative;
+    background: #3c3c3c;
+    -webkit-app-region: drag;
+}
+.leftBtns{
+    position: absolute;
+    top: 0;
+    left: 0;
+    bottom: 0;
+    -webkit-app-region: no-drag;
+}
+.leftBtns i{
+    display: inline-block;
+    width: 1px;
+    margin: 5px;
+    height: calc(100% - 10px);
+    background-color: #626262;
+}
+.title{
+    color: #fff;
+    display: block;
+    font-size: 14px;
+    padding-top: 7px;
+    font-weight: normal;
+}
+.buttons{
+    position: absolute;
+    top: 0;
+    right: 0;
+    bottom: 0;
+    -webkit-app-region: no-drag;
+}
+.buttons span, .leftBtns span{
+    display: inline-block;
+    color: #fff;
+    padding: 10px 18px;
+    padding-bottom: 11px; 
+}
+.leftBtns span{
+    padding: 7px;
+}
+.buttons span:hover, .leftBtns span:hover{
+    background-color: #626262;
+}
+.buttons span.close:hover{
+    background-color: #d80027;
+}
+.buttons span b, .leftBtns span b{
+    display: block;
+    color: #fff;
+    height: 10px;
+    width: 10px;
+    background-size: cover;
+    background-position: center center;
+    background-repeat: no-repeat;
+}
+.leftBtns span b{
+    height: 18px;
+    width: 18px;
+}
+.leftBtns span #file{
+    background-image: url('../../Icons/video-player.svg');
+}
+.leftBtns span #folder{
+    background-image: url('../../Icons/folder.svg');
+}
+.leftBtns span #prev{
+    background-image: url('../../Icons/restart.svg');
+}
+.leftBtns span #play{
+    background-image: url('../../Icons/play-button.svg');
+}
+.leftBtns span #pause{
+    background-image: url('../../Icons/pause.svg');
+}
+.leftBtns span #next{
+    background-image: url('../../Icons/skip.svg');
+}
+.leftBtns span #spkr-high{
+    background-image: url('../../Icons/speaker-full.svg');
+}
+.leftBtns span #spkr-min{
+    background-image: url('../../Icons/speaker-min.svg');
+}
+.leftBtns span #spkr-mute{
+    background-image: url('../../Icons/speaker-mute.svg');
+}
+
+.buttons span #minimize{
+    background-image: url('../../Icons/substract.svg');
+}
+.buttons span #rectangle{
+    background-image: url('../../Icons/rectangle.svg');
+}
+.buttons span #restore{
+    background-image: url('../../Icons/multi-tab.svg');
+}
+.buttons span #close{
+    background-image: url('../../Icons/cancel.svg');
+}
