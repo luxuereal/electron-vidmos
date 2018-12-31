@@ -1,9 +1,11 @@
 const electron = require('electron');
-const {app, BrowserWindow, ipcMain} = electron;
+const {app, BrowserWindow, ipcMain, dialog} = electron;
 
 let mainWindow;
 let createWindow = () => {
     mainWindow = new BrowserWindow({
+        minHeight: 600,
+        minWidth: 800,
         show: false,
         frame: (process.platform !== 'darwin') ? false : true,
         titleBarStyle: 'hidden'
@@ -25,6 +27,14 @@ app.on('activate', () => {
 });
 app.on('window-all-closed', () => {
     if(process.platform !== 'darwin') app.quit();
+});
+
+ipcMain.on('open-file', () => {
+    dialog.showOpenDialog({
+        title: 'Open Files',
+        properties: ['openFile', 'multiSelections'],
+        filters: [{name: 'Video Files', extensions: ['mp4', 'webm', 'ogg']}]
+    }, (path) => console.log(path));
 });
 
 ipcMain.on('minimize', () => {
