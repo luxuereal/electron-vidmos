@@ -34,7 +34,11 @@ ipcMain.on('open-file', () => {
         title: 'Open Files',
         properties: ['openFile', 'multiSelections'],
         filters: [{name: 'Video Files', extensions: ['mp4', 'webm', 'ogg']}]
-    }, (path) => console.log(path));
+    }, (files) => {
+        if(files !== undefined){
+            mainWindow.webContents.send('playables', files);
+        }
+    });
 });
 
 ipcMain.on('minimize', () => {
