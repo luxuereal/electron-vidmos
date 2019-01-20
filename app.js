@@ -1,3 +1,4 @@
+const fs = require('fs');
 const electron = require('electron');
 const {app, BrowserWindow, ipcMain, dialog} = electron;
 
@@ -8,7 +9,10 @@ let createWindow = () => {
         minWidth: 800,
         show: false,
         frame: (process.platform !== 'darwin') ? false : true,
-        titleBarStyle: 'hidden'
+        titleBarStyle: 'hidden',
+        webPreferences: {
+            webSecurity: false
+        }
     });
     mainWindow.loadURL('http://localhost:3000');
     mainWindow.on('closed', () => mainWindow = null);
@@ -16,6 +20,7 @@ let createWindow = () => {
 
      
     mainWindow.webContents.send('is-maximized', mainWindow.isMaximized());
+    mainWindow.webContents.openDevTools();
     mainWindow.on('maximize', () => mainWindow.webContents.send('is-maximized', mainWindow.isMaximized()));
     mainWindow.on('unmaximize', () => mainWindow.webContents.send('is-maximized', mainWindow.isMaximized()));
 };
@@ -29,14 +34,24 @@ app.on('window-all-closed', () => {
     if(process.platform !== 'darwin') app.quit();
 });
 
-ipcMain.on('open-file', () => {
+ipcMain.on('open-local', (event, type) => {
     dialog.showOpenDialog({
         title: 'Open Files',
-        properties: ['openFile', 'multiSelections'],
+        properties: (type === 'file') ? ['openFile', 'multiSelections'] : ['openDirectory'],
         filters: [{name: 'Video Files', extensions: ['mp4', 'webm', 'ogg']}]
     }, (files) => {
         if(files !== undefined){
-            mainWindow.webContents.send('playables', files);
+            if(type === 'file'){
+                mainWindow.webContents.send('playables', files);
+            }else{
+                let arr = [];
+                let dir = fs.readdirSync(files[0]);
+                for(let i = 0; i < dir.length; i++){
+                    if(dir[i] !== files[0])
+                        arr.push(files[0] + '\\' + dir[i]);
+                }
+                mainWindow.webContents.send('playables', arr);
+            }
         }
     });
 });
