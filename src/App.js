@@ -21,11 +21,28 @@ class App extends Component {
     ipcRenderer.on('is-maximized', (event, bool) => {
       this.setState({isMax: bool});
     }); 
+    ipcRenderer.on('playables', (event, arr) => {
+      this.setState({playList: arr});
+      this.initPlayer();
+    });
   }
   componentWillMount(){   
   }
-  openFiles() {
-    ipcRenderer.send('open-file');
+  openFiles(e) {
+    ipcRenderer.send('open-local', e.target.getAttribute('data-type'));
+  }
+  initPlayer() {
+    let player = document.getElementById('thePlayer');
+    let source = document.createElement('source');
+    let timer = document.querySelector('.timer #total');
+    source.setAttribute('src', this.state.playList[0]);
+    player.appendChild(source);
+    setTimeout(() => {
+      // player.load();
+      player.play();
+      console.log('now playing ....' + this.state.playList[0]);
+      timer.innerHTML = `:${parseInt((player.duration) / 60, 10)}:${parseInt(player.duration % 60, 10)}`;
+    }, 300);
   }
   toggleMute() {
      
