@@ -5,10 +5,10 @@ class Titlebar extends Component {
   render() {
     let max, rightControls,
       leftControls =  <div className="leftBtns">
-                        <span title="Open File(s)" onClick={this.props.openFiles.bind(this)}>
+                        <span title="Open File(s)" data-type="file" onClick={this.props.openFiles.bind(this)}>
                           <b id="file"></b>
                         </span>
-                        <span title="Open Directory">
+                        <span title="Open Directory" data-type="directory" onClick={this.props.openFiles.bind(this)}>
                           <b id="folder"></b>
                         </span>
                         <i></i>

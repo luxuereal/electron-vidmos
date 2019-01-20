@@ -1,6 +1,5 @@
 import React, { Component } from 'react';
 import './Player.css';
-import { throws } from 'assert';
 
 class Player extends Component{
     render() {
@@ -12,7 +11,8 @@ class Player extends Component{
         }
         return(
             <div id="video-container">
-                <video onDoubleClick={this.props.toggleFullScreen.bind(this)}></video>
+                <video id="thePlayer" onDoubleClick={this.props.toggleFullScreen.bind(this)}>
+                </video>
                 <div className="control-container">
                     <div className="seekbar"
                         
@@ -39,7 +39,7 @@ class Player extends Component{
                             <div className="vol-fluid"></div>
                           </div>
                         </span>
-                        <span className="timer">0:00:00 / 0:00:00</span>
+                        <span className="timer">0:00:00 / <span id="total">0:00:00</span></span>
                         <span className="full-screen" title="Toggle Full Screen" onClick={this.props.toggleFullScreen}>
                             {fullScreenToggler}
                         </span>
