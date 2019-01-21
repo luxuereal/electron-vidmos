@@ -38,7 +38,7 @@ ipcMain.on('open-local', (event, type) => {
     dialog.showOpenDialog({
         title: 'Open Files',
         properties: (type === 'file') ? ['openFile', 'multiSelections'] : ['openDirectory'],
-        filters: [{name: 'Video Files', extensions: ['mp4', 'webm', 'ogg']}]
+        filters: [{name: 'Video Files', extensions: ['mp4', 'webm', 'ogg', 'mkv']}]
     }, (files) => {
         if(files !== undefined){
             if(type === 'file'){
