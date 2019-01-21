@@ -3,16 +3,27 @@ import './Player.css';
 
 class Player extends Component{
     render() {
+        let playOrPause = <b data-id="play"></b>;
         let fullScreenToggler = <b id="enter"></b>;
         if(this.props.state.isFullScreen){
             fullScreenToggler = <b id="exit"></b>
         }else{
             fullScreenToggler = <b id="enter"></b>;
         }
+        if(this.props.state.isPlaying){
+            playOrPause = <b data-id="pause"></b>;
+        }else{
+            playOrPause = <b data-id="play"></b>;
+        }
         return(
             <div id="video-container">
-                <video id="thePlayer" onDoubleClick={this.props.toggleFullScreen.bind(this)}>
-                </video>
+                <div className="player-wrapper" onDoubleClick={this.props.toggleFullScreen.bind(this)}>
+                    <video id="thePlayer"
+                        onTimeUpdate={this.props.timeUpdate.bind(this)}
+                        onMouseMove={this.props.toggleControls.bind(this)}
+                    >
+                    </video>
+                </div>
                 <div className="control-container">
                     <div className="seekbar"
                         
@@ -25,7 +36,7 @@ class Player extends Component{
                             <b data-id="prev"></b>
                         </span>
                         <span title="Play | Pause" onClick={this.props.playPauseVideo.bind(this)}>
-                            <b data-id="play"></b>
+                            {playOrPause}
                         </span>
                         <span title="Stop" onClick={this.props.playPauseVideo.bind(this)}>
                             <b data-id="stop"></b>
@@ -39,7 +50,7 @@ class Player extends Component{
                             <div className="vol-fluid"></div>
                           </div>
                         </span>
-                        <span className="timer">0:00:00 / <span id="total">0:00:00</span></span>
+                        <span className="timer">0:00:00 / 0:00:00</span>
                         <span className="full-screen" title="Toggle Full Screen" onClick={this.props.toggleFullScreen}>
                             {fullScreenToggler}
                         </span>

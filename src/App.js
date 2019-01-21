@@ -34,50 +34,81 @@ class App extends Component {
   initPlayer() {
     let player = document.getElementById('thePlayer');
     let source = document.createElement('source');
-    let timer = document.querySelector('.timer #total');
     source.setAttribute('src', this.state.playList[0]);
     player.appendChild(source);
     setTimeout(() => {
-      // player.load();
       player.play();
-      console.log('now playing ....' + this.state.playList[0]);
-      timer.innerHTML = `:${parseInt((player.duration) / 60, 10)}:${parseInt(player.duration % 60, 10)}`;
-    }, 300);
+      this.setState({isPlaying: true});
+      player.volume = this.state.volume / 100;
+    }, 300); 
+  }
+  timeUpdate(){
+    let player = document.getElementById('thePlayer');
+    let timer = document.querySelector('.timer');
+    let Chrs = (parseInt(player.currentTime / 3600, 10) < 10 ? '0' : '') + parseInt(player.currentTime / 3600, 10);
+    let Cmins = (parseInt((player.currentTime % 3600) / 60) < 10 ? '0' : '') + parseInt((player.currentTime % 3600) / 60);
+    let Csecs = (parseInt(player.currentTime % 60, 10) < 10 ? '0' : '') + parseInt(player.currentTime % 60, 10);
+    let Thrs = (parseInt((player.duration / 3600), 10) < 10 ? '0' : '') + parseInt(((player.duration) / 3600), 10);
+    let Tmins = (parseInt((player.duration % 3600) / 60) < 10 ? '0' : '') + parseInt((player.duration % 3600) / 60);
+    let Tsecs = (parseInt(player.duration % 60, 10) < 10 ? '0' : '') + parseInt(player.duration % 60, 10);
+    timer.innerHTML = `${Chrs}:${Cmins}:${Csecs} / ${Thrs}:${Tmins}:${Tsecs}`;
+    document.getElementById('seekbar').style.width = ((player.currentTime / player.duration) * 100) + '%';
   }
   toggleMute() {
      
   }
   seek(event) {
+    let player = document.getElementById('thePlayer');
     let xCord = Math.round(event.clientX / window.innerWidth * 100);
+    player.currentTime = (player.duration / 100) * xCord;
     document.getElementById('seekbar').style.width = xCord + "%";
   }
   volume(event) {
+    let player = document.getElementById('thePlayer');
     let rect = event.target.getBoundingClientRect();
-    let x = event.clientX - rect.left;
-    let elements = document.querySelectorAll('.vol-fluid');
-    elements.forEach(element => {
-      element.style.width = x + '%';
-    })
+    let vol = event.clientX - rect.left - 6;
+    console.log(vol);
+    let element = document.querySelector('.vol-fluid');
+    element.style.width = vol + '%';
+    this.setState({volume: vol});
+    player.volume = vol / 100;
   }
   prevVideo() {
   }
   nextVideo() {
   }
   playPauseVideo() {
+    let player = document.getElementById('thePlayer');
+    if(player.paused){
+      player.play();
+    }else{
+      player.pause();
+    }
     this.setState({isPlaying: !this.state.isPlaying});
   }
-  toggleFullScreen(event) {
-    let el = document.getElementById('video-container');
-    if(this.state.isFullScreen){
-      document.webkitCancelFullScreen(); 
-      el.classList.remove("full-screen-toggle");
-      this.setState({isFullScreen: false});
-    }else{
-      el.classList.add("full-screen-toggle");
-      el.webkitRequestFullScreen();
-      this.setState({isFullScreen: true});
+  toggleFullScreen() {
+    let source = document.querySelector('#thePlayer source');
+    if(source !== null){
+      if(this.state.isFullScreen){
+        document.webkitCancelFullScreen(); 
+        document.querySelector('.player-wrapper').classList.remove('full');
+        document.querySelector('.control-container').classList.remove('full');
+      } else {
+        document.querySelector('.player-wrapper').classList.add('full');
+        document.getElementById('video-container').webkitRequestFullScreen();
+        document.querySelector('.control-container').classList.add('full');
+      }
+      this.setState({ isFullScreen: !this.state.isFullScreen });
     }
-    event.preventDefault();
+  }
+  toggleControls(){
+    let controls = document.querySelector('.control-container');
+    if (this.state.isFullScreen) {
+      controls.classList.remove('full');
+      setTimeout(() => {
+        controls.classList.add('full');
+      }, 2000);
+    }
   }
   closeApp() {
     ipcRenderer.send('exit');
@@ -106,9 +137,11 @@ class App extends Component {
           seek={this.seek.bind(this)}
           volume={this.volume.bind(this)}
           prevVideo={this.prevVideo.bind(this)}
+          timeUpdate={this.timeUpdate.bind(this)}
           nextVideo={this.nextVideo.bind(this)}
           toggleMute={this.toggleMute.bind(this)}
           playPauseVideo={this.playPauseVideo.bind(this)}
+          toggleControls={this.toggleControls.bind(this)}
           toggleFullScreen={this.toggleFullScreen.bind(this)}
         />
       </div>

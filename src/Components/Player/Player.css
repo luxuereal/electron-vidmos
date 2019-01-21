@@ -3,21 +3,29 @@
     width: 100vw;
     background: #282c34;
 }
+.player-wrapper{
+    width: 100%;
+    height: 92vh;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    background: #000;
+}
+.player-wrapper.full{
+    height: 100vh;
+    width: 100vw;
+}
+
 video{
-    /* display: none; */
-    position: absolute;
-    /* z-index: -999; */
-    top: 0;
-    left: 0;
-    right: 0;
-    bottom: 0;
-    height: 90%;
-    width: 100%; 
-    /* background: #282c34;
-    background-repeat: no-repeat;
-    background-size: contain;
-    background-position: center center;
-    background-image: url('../../Icons/166429.5000.thumbnail.JPEG'); */
+    margin: 0;
+    padding: 0;
+    width: 100%;
+    height: 100%;
+    object-fit: contain; 
+}
+.player-wrapper.full video{
+    object-fit: fill;
 }
 video::-webkit-media-controls {
     display:none !important;
@@ -37,6 +45,23 @@ video::-webkit-media-controls-enclosure {
     background: #242425;
     box-shadow: 1px 1px 10px 0px rgba(red, 0, 0, 0.2);
     z-index: 99;
+    transition: all 320ms;
+}
+.control-container.full{
+    bottom: -35px;
+    pointer-events: none;
+    background: transparent;
+}
+.control-container.full:hover{
+    bottom: 0;
+    pointer-events: all;
+    background: #242425;
+}
+.control-container.full .seekbar{
+    background: transparent;
+}
+.control-container.full:hover .seekbar{
+    background: #1d1d1d;
 }
 .seekbar{
     padding: 1px 0px;
@@ -133,7 +158,7 @@ video::-webkit-media-controls-enclosure {
 }
 .controls .speaker .vol-fluid{
     height: 2px;
-    width: 10%;
+    width: 67%;
     border-radius: 4px;
     background: #0151b0;
     position: relative;

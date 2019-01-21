@@ -3,6 +3,12 @@ import './Titlebar.css';
 
 class Titlebar extends Component {
   render() {
+    let playOrPause = <b id="play"></b>;
+    if (this.props.state.isPlaying) {
+      playOrPause = <b id="pause"></b>;
+    } else {
+      playOrPause = <b id="play"></b>;
+    }
     let max, rightControls,
       leftControls =  <div className="leftBtns">
                         <span title="Open File(s)" data-type="file" onClick={this.props.openFiles.bind(this)}>
@@ -16,7 +22,7 @@ class Titlebar extends Component {
                           <b id="prev"></b>
                         </span>
                         <span title="Play | Pause" onClick={this.props.playPauseVideo.bind(this)}>
-                          <b id="play"></b>
+                          {playOrPause}
                         </span>
                         <span title="Next" onClick={this.props.nextVideo.bind(this)}>
                           <b id="next"></b>
