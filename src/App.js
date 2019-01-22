@@ -24,12 +24,17 @@ class App extends Component {
     ipcRenderer.on('playables', (event, arr) => {
       this.setState({playList: arr});
       this.initPlayer();
+      console.log(this.state.playList);
     });
   }
   componentWillMount(){   
   }
   openFiles(e) {
-    ipcRenderer.send('open-local', e.target.getAttribute('data-type'));
+    let data = e.target.getAttribute('data-type');
+    setTimeout(() => {
+      ipcRenderer.send('open-local', data);
+      console.log(data);
+    }, 300);
   }
   initPlayer() {
     let player = document.getElementById('thePlayer');
@@ -55,7 +60,16 @@ class App extends Component {
     document.getElementById('seekbar').style.width = ((player.currentTime / player.duration) * 100) + '%';
   }
   toggleMute() {
-     
+    let player = document.getElementById('thePlayer');
+    let fluid = document.querySelector('.vol-fluid');
+    player.muted = !this.state.isMute;
+    this.setState({isMute: !this.state.isMute}); 
+    if(!this.state.isMute){
+      fluid.style.width = 0 + '%';
+    }else{
+      fluid.style.width = ((this.state.volume === 0) ? 67 : this.state.volume) + '%';
+      if(this.state.volume === 0) this.setState({volume: 67});
+    }
   }
   seek(event) {
     let player = document.getElementById('thePlayer');
@@ -65,13 +79,29 @@ class App extends Component {
   }
   volume(event) {
     let player = document.getElementById('thePlayer');
-    let rect = event.target.getBoundingClientRect();
-    let vol = event.clientX - rect.left - 6;
-    console.log(vol);
     let element = document.querySelector('.vol-fluid');
+    let rect = event.target.getBoundingClientRect();
+    let vol = (event.clientX) - rect.left;
+    if(vol > 100){
+      vol = 100;
+    }else if(vol <= 0){
+      this.setState({isMute: !this.state.isMute});
+      vol = 0;
+    }
     element.style.width = vol + '%';
     this.setState({volume: vol});
     player.volume = vol / 100;
+    if (this.state.isMute) this.setState({ isMute: !this.state.isMute });
+  }
+  stopVideo(){
+    let player = document.getElementById('thePlayer');
+    let source = document.querySelector('#thePlayer source');
+    if (source != null) {
+      player.pause();
+      player.currentTime = 0;
+    } else {
+      alert("There is no video to stop.");
+    }
   }
   prevVideo() {
   }
@@ -79,12 +109,17 @@ class App extends Component {
   }
   playPauseVideo() {
     let player = document.getElementById('thePlayer');
-    if(player.paused){
-      player.play();
+    let source = document.querySelector('#thePlayer source');
+    if(source != null){
+      if(player.paused){
+        player.play();
+      }else{
+        player.pause();
+      }
+      this.setState({isPlaying: !this.state.isPlaying});
     }else{
-      player.pause();
+      alert("There is no video to play/pause.");
     }
-    this.setState({isPlaying: !this.state.isPlaying});
   }
   toggleFullScreen() {
     let source = document.querySelector('#thePlayer source');
@@ -92,22 +127,24 @@ class App extends Component {
       if(this.state.isFullScreen){
         document.webkitCancelFullScreen(); 
         document.querySelector('.player-wrapper').classList.remove('full');
-        document.querySelector('.control-container').classList.remove('full');
       } else {
         document.querySelector('.player-wrapper').classList.add('full');
         document.getElementById('video-container').webkitRequestFullScreen();
-        document.querySelector('.control-container').classList.add('full');
       }
       this.setState({ isFullScreen: !this.state.isFullScreen });
+      document.querySelector('.control-container').classList.remove('full');
+    }else{
+      alert('Cannot enter full screen when no video is loaded.');
     }
   }
   toggleControls(){
     let controls = document.querySelector('.control-container');
-    if (this.state.isFullScreen) {
-      controls.classList.remove('full');
+    let playerWrapper = document.querySelector('.player-wrapper');
+    controls.classList.remove('full');
+    if (this.state.isFullScreen && playerWrapper.classList.contains('full')) {
       setTimeout(() => {
         controls.classList.add('full');
-      }, 2000);
+      }, 5000);
     }
   }
   closeApp() {
@@ -136,9 +173,10 @@ class App extends Component {
           state={this.state}          
           seek={this.seek.bind(this)}
           volume={this.volume.bind(this)}
+          stopVideo={this.stopVideo.bind(this)}
           prevVideo={this.prevVideo.bind(this)}
-          timeUpdate={this.timeUpdate.bind(this)}
           nextVideo={this.nextVideo.bind(this)}
+          timeUpdate={this.timeUpdate.bind(this)}
           toggleMute={this.toggleMute.bind(this)}
           playPauseVideo={this.playPauseVideo.bind(this)}
           toggleControls={this.toggleControls.bind(this)}

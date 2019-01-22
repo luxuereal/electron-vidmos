@@ -3,6 +3,7 @@ import './Player.css';
 
 class Player extends Component{
     render() {
+        let volume = "spkr-high";
         let playOrPause = <b data-id="play"></b>;
         let fullScreenToggler = <b id="enter"></b>;
         if(this.props.state.isFullScreen){
@@ -15,9 +16,18 @@ class Player extends Component{
         }else{
             playOrPause = <b data-id="play"></b>;
         }
+        if(this.props.state.volume === 0 || this.props.state.isMute){
+            volume = "spkr-mute";
+        }else if(this.props.state.volume > 50){
+            volume = "spkr-high";
+        }else{
+            volume = "spkr-min";
+        }
         return(
             <div id="video-container">
-                <div className="player-wrapper" onDoubleClick={this.props.toggleFullScreen.bind(this)}>
+                <div className="player-wrapper"
+                    onDoubleClick={this.props.toggleFullScreen.bind(this)}
+                >
                     <video id="thePlayer"
                         onTimeUpdate={this.props.timeUpdate.bind(this)}
                         onMouseMove={this.props.toggleControls.bind(this)}
@@ -38,14 +48,14 @@ class Player extends Component{
                         <span title="Play | Pause" onClick={this.props.playPauseVideo.bind(this)}>
                             {playOrPause}
                         </span>
-                        <span title="Stop" onClick={this.props.playPauseVideo.bind(this)}>
+                        <span title="Stop" onClick={this.props.stopVideo.bind(this)}>
                             <b data-id="stop"></b>
                         </span>
                         <span title="Next" onClick={this.props.nextVideo.bind(this)}>
                             <b data-id="next"></b>
                         </span>
                         <span className="speaker">
-                          <b data-id="spkr-high" title="Mute | Unmute" onClick={this.props.toggleMute.bind(this)}></b>
+                          <b data-id={volume} title="Mute | Unmute" onClick={this.props.toggleMute.bind(this)}></b>
                           <div className="vol-slider" onMouseDown={this.props.volume.bind(this)}>
                             <div className="vol-fluid"></div>
                           </div>
