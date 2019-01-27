@@ -47,11 +47,13 @@ video::-webkit-media-controls-enclosure {
     z-index: 99;
     transition: all 320ms;
 }
+
 .control-container.full{
     bottom: -35px;
     pointer-events: none;
     background: transparent;
 }
+
 .control-container.full:hover{
     bottom: 0;
     pointer-events: all;

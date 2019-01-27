@@ -50,7 +50,7 @@ class Titlebar extends Component {
       rightControls = leftControls;
     }
     return (
-      <div className="Titlebar">
+      <div className="Titlebar" id="theTitleBar">
         <b className="title">{this.props.state.title}</b>
         {leftControls}
         {rightControls}
