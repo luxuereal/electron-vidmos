@@ -75,14 +75,16 @@ class App extends Component {
   toggleMute() {
     let player = document.getElementById('thePlayer');
     let fluid = document.querySelector('.vol-fluid');
-    if(!this.state.isMute && !player.muted){
-      fluid.style.width = 0 + '%';
-    }else{
+    if (player.muted && this.state.isMute) {
+      player.muted = false;
+      if (this.state.volume === 0) this.setState({ volume: 67 });
+      player.volume = ((this.state.volume === 0) ? 67 : this.state.volume) / 100;
       fluid.style.width = ((this.state.volume === 0) ? 67 : this.state.volume) + '%';
-      if(this.state.volume === 0) this.setState({volume: 67});
+    } else {
+      player.muted = true;
+      fluid.style.width = 0 + '%';
     }
-    player.muted = !this.state.isMute;
-    this.setState({ isMute: !this.state.isMute }); 
+    this.setState({isMute: !this.state.isMute});
   }
   seek(event, update = null) {
     let xCord = this.state.seekProcess;
@@ -125,14 +127,19 @@ class App extends Component {
     }
     if (vol > 100) {
       vol = 100;
+      player.muted = false;
+      this.setState({isMute: false});
     } else if (vol <= 0) {
-      this.setState({ isMute: !this.state.isMute });
       vol = 0;
+      player.muted = true;
+      this.setState({isMute: true});
+    }else{
+      player.muted = false;
+      this.setState({ isMute: false });
     }
-    element.style.width = vol + '%';
-    this.setState({ volume: vol });
     player.volume = vol / 100;
-    if (this.state.isMute) this.setState({ isMute: !this.state.isMute });
+    this.setState({ volume: vol });
+    element.style.width = vol + '%';
   }
   stopVideo(){
     let player = document.getElementById('thePlayer');
