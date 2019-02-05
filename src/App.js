@@ -15,19 +15,21 @@ class App extends Component {
       volume: 67,
       isMute: false,
       seekProcess: 0,
+      playIndex: 0,
       playList: [],
       isPlaying: false,
       isFullScreen: false,
+      isDialogOpened: false,
     }
     ipcRenderer.on('is-maximized', (event, bool) => {
       this.setState({isMax: bool});
     }); 
     ipcRenderer.on('playables', (event, arr) => {
+      if(arr.length === 0) return this.alert('Please select valid file or directory with supported media.');
+      localStorage.setItem('playList', arr);
       this.setState({playList: arr});
       this.initPlayer();
-      console.log(this.state.playList);
     });
-
     window.addEventListener('keyup', (e) => e.preventDefault());
 
     ipcRenderer.on('stopVideo', () => this.stopVideo());
@@ -39,25 +41,34 @@ class App extends Component {
     ipcRenderer.on('playPauseVideo', () => this.playPauseVideo());
     ipcRenderer.on('toggleFullScreen', () => this.toggleFullScreen(true));
   }
-  componentWillMount(){   
+  alert(data){   
+    let alert = document.querySelector('.alert-wrapper .alert');
+    alert.style.display = 'block';
+    alert.innerHTML = data;
+    setTimeout(() => {
+      alert.style.display = 'none';
+    }, 5000);
   }
   openFiles(e) {
-    let data = e.target.getAttribute('data-type');
-    setTimeout(() => {
-      ipcRenderer.send('open-local', data);
-      console.log(data);
-    }, 300);
+    ipcRenderer.send('open-local', 'file');
+  }
+  openDirectory() {
+    ipcRenderer.send('open-local', 'dir');
   }
   initPlayer() {
     let player = document.getElementById('thePlayer');
-    let source = document.createElement('source');
-    source.setAttribute('src', this.state.playList[0]);
-    player.appendChild(source);
-    setTimeout(() => {
-      player.play();
-      this.setState({isPlaying: true});
-      player.volume = this.state.volume / 100;
-    }, 300); 
+    let currSrc = document.querySelector('#thePlayer source');
+    if(currSrc != null){
+      currSrc.setAttribute('src', this.state.playList[0]);
+    }else{
+      let source = document.createElement('source');
+      player.removeAttribute('src');
+      source.setAttribute('src', this.state.playList[0]);
+      player.appendChild(source);
+    }
+    player.load();
+    player.play();
+    player.volume = this.state.volume / 100;
   }
   timeUpdate(){
     let player = document.getElementById('thePlayer');
@@ -71,6 +82,13 @@ class App extends Component {
     timer.innerHTML = `${Chrs}:${Cmins}:${Csecs} / ${Thrs}:${Tmins}:${Tsecs}`;
     document.getElementById('seekbar').style.width = ((player.currentTime / player.duration) * 100) + '%';
     this.setState({ seekProcess: ((player.currentTime / player.duration) * 100)});
+    if(player.currentTime === player.duration){
+      if(this.state.playIndex < this.state.playList.length - 1){
+        this.nextVideo();
+      }else{
+        this.stopVideo();
+      }
+    }
   }
   toggleMute() {
     let player = document.getElementById('thePlayer');
@@ -110,7 +128,7 @@ class App extends Component {
       player.currentTime = (player.duration / 100) * xCord;
       document.getElementById('seekbar').style.width = xCord + "%";
     }else{
-      alert('Cannot seek when no video is being played.');
+      this.alert('Cannot seek when no video is being played.');
     }
   }
   volume(event, update = null) {
@@ -147,13 +165,44 @@ class App extends Component {
     if (source != null) {
       player.pause();
       player.currentTime = 0;
+      this.setState({isPlaying: false});
     } else {
-      alert("There is no video to stop.");
+      this.alert("There is no video to stop.");
     }
   }
   prevVideo() {
+    let player = document.getElementById('thePlayer');
+    let source = document.querySelector('#thePlayer source');
+    if(source != null){
+      let src = source.getAttribute('src');
+      let idx = this.state.playList.indexOf(src);
+      if(idx > 0){
+        this.stopVideo();
+        player.removeAttribute('src');
+        source.setAttribute('src', this.state.playList[idx - 1]);
+        player.load();
+        player.play();
+        this.setState({ playIndex: idx - 1});
+        this.setState({isPlaying: true});
+      }
+    } 
   }
   nextVideo() {
+    let player = document.getElementById('thePlayer');
+    let source = document.querySelector('#thePlayer source');
+    if (source != null) {
+      let src = source.getAttribute('src');
+      let idx = this.state.playList.indexOf(src);
+      if (idx < this.state.playList.length - 1) {
+        this.stopVideo();
+        player.removeAttribute('src');
+        source.setAttribute('src', this.state.playList[idx + 1]);
+        player.load();
+        player.play();
+        this.setState({ playIndex: idx + 1 });
+        this.setState({ isPlaying: true });
+      }
+    }
   }
   playPauseVideo() {
     let player = document.getElementById('thePlayer');
@@ -166,7 +215,7 @@ class App extends Component {
       }
       this.setState({isPlaying: !this.state.isPlaying});
     }else{
-      alert("There is no video to play/pause.");
+      this.alert("There is no video to play/pause.");
     }
   }
   toggleFullScreen(isFromElectron=false) {
@@ -189,7 +238,7 @@ class App extends Component {
       }
       setTimeout(() => document.querySelector('.control-container').classList.remove('full'), 500);
     }else{
-      alert('Cannot enter full screen when no video is loaded.');
+      this.alert('Cannot enter full screen when no video is loaded.');
     }
   }
   toggleControls(){
@@ -224,6 +273,7 @@ class App extends Component {
           nextVideo={this.nextVideo.bind(this)}
           maximizeApp={this.maximizeApp.bind(this)}
           minimizeApp={this.minimizeApp.bind(this)}
+          openDirectory={this.openDirectory.bind(this)}
           playPauseVideo={this.playPauseVideo.bind(this)}
         />
         <Player
@@ -239,6 +289,9 @@ class App extends Component {
           toggleControls={this.toggleControls.bind(this)}
           toggleFullScreen={this.toggleFullScreen.bind(this)}
         />
+        <div className="alert-wrapper">
+          <div className="alert"></div>
+        </div>
       </div>
     );
   }

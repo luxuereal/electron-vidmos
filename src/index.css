@@ -13,3 +13,26 @@ code {
   font-family: source-code-pro, Menlo, Monaco, Consolas, "Courier New",
     monospace;
 }
+.alert-wrapper{
+  /* width: 100vw;
+  height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center; */
+  position: absolute;
+  /* top: 0; */
+  /* left: 0; */
+  left: 8px;
+  bottom: 50px;
+  color: #ffffff;
+  background: transparent;
+}
+.alert{
+  display: none;
+  cursor: default;
+  padding: 10px 15px;
+  background: #242425;
+  border-top-right-radius: 1px;
+  border-bottom-right-radius: 1px;
+  box-shadow: -3px 0px 0px 0px #0151b0;
+}
