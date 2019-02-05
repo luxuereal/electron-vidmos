@@ -3,6 +3,25 @@ import './Player.css';
 
 class Player extends Component{
     render() {
+        let disabledPlay = "";
+        let disabledPrev = "";
+        let disabledNext = "";
+        let idx = this.props.state.playIndex;
+        if (this.props.state.playList.length > 0) {
+            disabledPlay = "";
+        } else {
+            disabledPlay = "disabled";
+        }
+        if (idx < this.props.state.playList.length - 1) {
+            disabledNext = "";
+        } else {
+            disabledNext = "disabled";
+        }
+        if (idx > 0) {
+            disabledPrev = "";
+        } else {
+            disabledPrev = "disabled";
+        }
         let volume = "spkr-high";
         let playOrPause = <b data-id="play"></b>;
         let fullScreenToggler = <b id="enter"></b>;
@@ -42,16 +61,16 @@ class Player extends Component{
                         <div className="fluid" id="seekbar"></div>
                     </div>
                     <div className="controls">
-                        <span title="Previous" onClick={this.props.prevVideo.bind(this)}>
+                        <span title="Previous" className={disabledPrev} onClick={this.props.prevVideo.bind(this)}>
                             <b data-id="prev"></b>
                         </span>
-                        <span title="Play | Pause" onClick={this.props.playPauseVideo.bind(this)}>
+                        <span title="Play | Pause" className={disabledPlay} onClick={this.props.playPauseVideo.bind(this)}>
                             {playOrPause}
                         </span>
-                        <span title="Stop" onClick={this.props.stopVideo.bind(this)}>
+                        <span title="Stop" className={disabledPlay} onClick={this.props.stopVideo.bind(this)}>
                             <b data-id="stop"></b>
                         </span>
-                        <span title="Next" onClick={this.props.nextVideo.bind(this)}>
+                        <span title="Next" className={disabledNext} onClick={this.props.nextVideo.bind(this)}>
                             <b data-id="next"></b>
                         </span>
                         <span className="speaker">
@@ -61,7 +80,7 @@ class Player extends Component{
                           </div>
                         </span>
                         <span className="timer">0:00:00 / 0:00:00</span>
-                        <span className="full-screen" title="Toggle Full Screen" onClick={this.props.toggleFullScreen}>
+                        <span className={`full-screen ${disabledPlay}`} title="Toggle Full Screen" onClick={this.props.toggleFullScreen}>
                             {fullScreenToggler}
                         </span>
                     </div>

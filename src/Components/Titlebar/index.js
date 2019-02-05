@@ -3,6 +3,25 @@ import './Titlebar.css';
 
 class Titlebar extends Component {
   render() {
+    let disabledPlay = "";
+    let disabledPrev = "";
+    let disabledNext = "";
+    let idx = this.props.state.playIndex;
+    if(this.props.state.playList.length > 0){
+      disabledPlay = "";
+    }else{
+      disabledPlay = "disabled";
+    }
+    if (idx < this.props.state.playList.length - 1){
+      disabledNext = "";
+    }else{
+      disabledNext = "disabled";
+    }
+    if (idx > 0) {
+      disabledPrev = "";
+    } else {
+      disabledPrev = "disabled";
+    }
     let playOrPause = <b id="play"></b>;
     if (this.props.state.isPlaying) {
       playOrPause = <b id="pause"></b>;
@@ -11,29 +30,33 @@ class Titlebar extends Component {
     }
     let max, rightControls,
       leftControls =  <div className="leftBtns">
-                        <span title="Open File(s)" data-type="file" onClick={this.props.openFiles.bind(this)}>
+                        <span className="app">
+                          <b id="app"></b>
+                        </span>
+                        <i></i>
+                        <span title="Open File(s)" onClick={this.props.openFiles.bind(this)}>
                           <b id="file"></b>
                         </span>
-                        <span title="Open Directory" data-type="directory" onClick={this.props.openFiles.bind(this)}>
+                        <span title="Open Directory" onClick={this.props.openDirectory.bind(this)}>
                           <b id="folder"></b>
                         </span>
                         <i></i>
-                        <span title="Previous" onClick={this.props.prevVideo.bind(this)}>
+                        <span title="Previous" className={disabledPrev} onClick={this.props.prevVideo.bind(this)}>
                           <b id="prev"></b>
                         </span>
-                        <span title="Play | Pause" onClick={this.props.playPauseVideo.bind(this)}>
+                        <span title="Play | Pause" className={disabledPlay} onClick={this.props.playPauseVideo.bind(this)}>
                           {playOrPause}
                         </span>
-                        <span title="Next" onClick={this.props.nextVideo.bind(this)}>
+                        <span title="Next" className={disabledNext} onClick={this.props.nextVideo.bind(this)}>
                           <b id="next"></b>
                         </span>
-                        <i></i>
+                        {/* <i></i>
                         <span title="Playlist">
                           <b id="list"></b>
                         </span>
                         <span title="Recently Played">
                           <b id="recent"></b>
-                        </span>
+                        </span> */}
                       </div>;
     if(this.props.state.isMax){
       max = <b id="restore"></b>

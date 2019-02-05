@@ -129,6 +129,9 @@ video::-webkit-media-controls-enclosure {
 .controls span:hover{
     background-color: #626262;
 }
+.controls .disabled:hover{
+    background-color: #242425;
+}
 .controls span b{
     display: block;
     color: #fff;

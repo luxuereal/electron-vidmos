@@ -47,6 +47,14 @@
     -webkit-app-region: no-drag;
     position: relative;
 }
+.leftBtns span.app{
+    width: 20px;
+    margin-left: 2px;
+}
+
+.leftBtns span #app{
+    background-image: url('../../Icons/app.icon.png');
+}
 .leftBtns span #list{
     background-image: url('../../Icons/list.svg');
 }
@@ -55,6 +63,9 @@
 }
 .buttons span:hover, .leftBtns span:hover{
     background-color: #626262;
+}
+.leftBtns span.app:hover, .leftBtns span.disabled:hover{
+    background: #3c3c3c;
 }
 .buttons span.close:hover{
     background-color: #d80027;
