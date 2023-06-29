@@ -50,13 +50,6 @@ class Titlebar extends Component {
                         <span title="Next" className={disabledNext} onClick={this.props.nextVideo.bind(this)}>
                           <b id="next"></b>
                         </span>
-                        {/* <i></i>
-                        <span title="Playlist">
-                          <b id="list"></b>
-                        </span>
-                        <span title="Recently Played">
-                          <b id="recent"></b>
-                        </span> */}
                       </div>;
     if(this.props.state.isMax){
       max = <b id="restore"></b>
