@@ -20,6 +20,7 @@ let createWindow = () => {
     });
     //MainWindow Load Default: http://localhost:3000
     mainWindow.loadURL('http://localhost:3000');
+    //Event Listner 
     mainWindow.on('closed', () => mainWindow = null);
     mainWindow.once('ready-to-show', () => mainWindow.show());
     mainWindow.webContents.send('is-maximized', mainWindow.isMaximized());
