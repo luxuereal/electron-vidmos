@@ -18,10 +18,10 @@ let createWindow = () => {
             webSecurity: false
         }
     });
+    //MainWindow Load Default: http://localhost:3000
     mainWindow.loadURL('http://localhost:3000');
     mainWindow.on('closed', () => mainWindow = null);
     mainWindow.once('ready-to-show', () => mainWindow.show());
-    
     mainWindow.webContents.send('is-maximized', mainWindow.isMaximized());
     mainWindow.on('maximize', () => mainWindow.webContents.send('is-maximized', mainWindow.isMaximized()));
     mainWindow.on('unmaximize', () => mainWindow.webContents.send('is-maximized', mainWindow.isMaximized()));
