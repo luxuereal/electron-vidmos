@@ -18,7 +18,7 @@ let createWindow = () => {
             webSecurity: false
         }
     });
-    //MainWindow Load Default: http://localhost:3000
+    //MainWindow Load Default on http://localhost:3000
     mainWindow.loadURL('http://localhost:3000');
     //Event Listner 
     mainWindow.on('closed', () => mainWindow = null);
